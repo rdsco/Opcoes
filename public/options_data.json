@@ -1,0 +1,29 @@
+[
+  {
+    "ticker": "PETRJ340",
+    "asset": "PETR4",
+    "tipo": "Call",
+    "valor": "R$ 0.55",
+    "raw_valor": 0.55,
+    "vencimento": "16/10/2026",
+    "vencimento_iso": "2026-10-16"
+  },
+  {
+    "ticker": "VALEV800",
+    "asset": "VALE3",
+    "tipo": "Put",
+    "valor": "R$ 1.20",
+    "raw_valor": 1.2,
+    "vencimento": "16/10/2026",
+    "vencimento_iso": "2026-10-16"
+  },
+  {
+    "ticker": "BBDCK150",
+    "asset": "BBDC4",
+    "tipo": "Call",
+    "valor": "R$ 0.30",
+    "raw_valor": 0.3,
+    "vencimento": "16/11/2026",
+    "vencimento_iso": "2026-11-16"
+  }
+]
