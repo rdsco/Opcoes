@@ -1,0 +1,884 @@
+{
+  "success": true,
+  "filename": "C:\\Users\\rinal\\Projetos\\BoxB3\\Rastreador_Box_202609.xlsm",
+  "link_url": "https://investimentos.btgpactual.com/opcoes/margens/",
+  "last_btg_consult_time": "2026-08-11 14:08:31",
+  "last_scan_time": "2026-08-11 14:09:11",
+  "last_excel_update_time": "2026-08-11 14:13:24",
+  "total_ativos": 86,
+  "counts_antigo": {
+    "A": 56,
+    "B": 9,
+    "C": 5,
+    "D": 16
+  },
+  "counts_novo": {
+    "A": 56,
+    "B": 9,
+    "C": 5,
+    "D": 16
+  },
+  "total_alterados": 0,
+  "ativos": [
+    {
+      "alterado": false,
+      "grupo_antigo": "A",
+      "grupo_novo": "A",
+      "id": 9,
+      "nome": "ABEV3",
+      "operavel": true,
+      "preco": 0,
+      "prefixo": "ABEV"
+    },
+    {
+      "alterado": false,
+      "grupo_antigo": "A",
+      "grupo_novo": "A",
+      "id": 21,
+      "nome": "ALOS3",
+      "operavel": true,
+      "preco": 0,
+      "prefixo": "ALOS"
+    },
+    {
+      "alterado": false,
+      "grupo_antigo": "A",
+      "grupo_novo": "A",
+      "id": 10,
+      "nome": "AXIA3",
+      "operavel": true,
+      "preco": 0,
+      "prefixo": "AXIA"
+    },
+    {
+      "alterado": false,
+      "grupo_antigo": "A",
+      "grupo_novo": "A",
+      "id": 60,
+      "nome": "AZZA3",
+      "operavel": true,
+      "preco": 0,
+      "prefixo": "AZZA"
+    },
+    {
+      "alterado": false,
+      "grupo_antigo": "A",
+      "grupo_novo": "A",
+      "id": 7,
+      "nome": "B3SA3",
+      "operavel": true,
+      "preco": 0,
+      "prefixo": "B3SA"
+    },
+    {
+      "alterado": false,
+      "grupo_antigo": "A",
+      "grupo_novo": "A",
+      "id": 6,
+      "nome": "BBAS3",
+      "operavel": true,
+      "preco": 0,
+      "prefixo": "BBAS"
+    },
+    {
+      "alterado": false,
+      "grupo_antigo": "A",
+      "grupo_novo": "A",
+      "id": 8,
+      "nome": "BBDC4",
+      "operavel": true,
+      "preco": 0,
+      "prefixo": "BBDC"
+    },
+    {
+      "alterado": false,
+      "grupo_antigo": "A",
+      "grupo_novo": "A",
+      "id": 30,
+      "nome": "BBSE3",
+      "operavel": true,
+      "preco": 0,
+      "prefixo": "BBSE"
+    },
+    {
+      "alterado": false,
+      "grupo_antigo": "A",
+      "grupo_novo": "A",
+      "id": 1,
+      "nome": "BOVA11",
+      "operavel": true,
+      "preco": 0,
+      "prefixo": "BOVA"
+    },
+    {
+      "alterado": false,
+      "grupo_antigo": "A",
+      "grupo_novo": "A",
+      "id": 14,
+      "nome": "BPAC11",
+      "operavel": true,
+      "preco": 0,
+      "prefixo": "BPAC"
+    },
+    {
+      "alterado": false,
+      "grupo_antigo": "A",
+      "grupo_novo": "A",
+      "id": 27,
+      "nome": "BRAP4",
+      "operavel": true,
+      "preco": 0,
+      "prefixo": "BRAP"
+    },
+    {
+      "alterado": false,
+      "grupo_antigo": "A",
+      "grupo_novo": "A",
+      "id": 37,
+      "nome": "CMIG4",
+      "operavel": true,
+      "preco": 0,
+      "prefixo": "CMIG"
+    },
+    {
+      "alterado": false,
+      "grupo_antigo": "A",
+      "grupo_novo": "A",
+      "id": 52,
+      "nome": "CPFE3",
+      "operavel": true,
+      "preco": 0,
+      "prefixo": "CPFE"
+    },
+    {
+      "alterado": false,
+      "grupo_antigo": "A",
+      "grupo_novo": "A",
+      "id": 51,
+      "nome": "CPLE3",
+      "operavel": true,
+      "preco": 0,
+      "prefixo": "CPLE"
+    },
+    {
+      "alterado": false,
+      "grupo_antigo": "A",
+      "grupo_novo": "A",
+      "id": 63,
+      "nome": "CSMG3",
+      "operavel": true,
+      "preco": 0,
+      "prefixo": "CSMG"
+    },
+    {
+      "alterado": false,
+      "grupo_antigo": "A",
+      "grupo_novo": "A",
+      "id": 20,
+      "nome": "CXSE3",
+      "operavel": true,
+      "preco": 0,
+      "prefixo": "CXSE"
+    },
+    {
+      "alterado": false,
+      "grupo_antigo": "A",
+      "grupo_novo": "A",
+      "id": 22,
+      "nome": "CYRE3",
+      "operavel": true,
+      "preco": 0,
+      "prefixo": "CYRE"
+    },
+    {
+      "alterado": false,
+      "grupo_antigo": "A",
+      "grupo_novo": "A",
+      "id": 42,
+      "nome": "DIRR3",
+      "operavel": true,
+      "preco": 0,
+      "prefixo": "DIRR"
+    },
+    {
+      "alterado": false,
+      "grupo_antigo": "A",
+      "grupo_novo": "A",
+      "id": 70,
+      "nome": "EGIE3",
+      "operavel": true,
+      "preco": 0,
+      "prefixo": "EGIE"
+    },
+    {
+      "alterado": false,
+      "grupo_antigo": "A",
+      "grupo_novo": "A",
+      "id": 29,
+      "nome": "EMBJ3",
+      "operavel": true,
+      "preco": 0,
+      "prefixo": "EMBJ"
+    },
+    {
+      "alterado": false,
+      "grupo_antigo": "A",
+      "grupo_novo": "A",
+      "id": 34,
+      "nome": "ENEV3",
+      "operavel": true,
+      "preco": 0,
+      "prefixo": "ENEV"
+    },
+    {
+      "alterado": false,
+      "grupo_antigo": "A",
+      "grupo_novo": "A",
+      "id": 57,
+      "nome": "EQTL3",
+      "operavel": true,
+      "preco": 0,
+      "prefixo": "EQTL"
+    },
+    {
+      "alterado": false,
+      "grupo_antigo": "A",
+      "grupo_novo": "A",
+      "id": 36,
+      "nome": "GGBR4",
+      "operavel": true,
+      "preco": 0,
+      "prefixo": "GGBR"
+    },
+    {
+      "alterado": false,
+      "grupo_antigo": "A",
+      "grupo_novo": "A",
+      "id": 13,
+      "nome": "GOAU4",
+      "operavel": true,
+      "preco": 0,
+      "prefixo": "GOAU"
+    },
+    {
+      "alterado": false,
+      "grupo_antigo": "A",
+      "grupo_novo": "A",
+      "id": 66,
+      "nome": "HYPE3",
+      "operavel": true,
+      "preco": 0,
+      "prefixo": "HYPE"
+    },
+    {
+      "alterado": false,
+      "grupo_antigo": "A",
+      "grupo_novo": "A",
+      "id": 84,
+      "nome": "IGTI11",
+      "operavel": true,
+      "preco": 0,
+      "prefixo": "IGTI"
+    },
+    {
+      "alterado": false,
+      "grupo_antigo": "A",
+      "grupo_novo": "A",
+      "id": 68,
+      "nome": "ISAE4",
+      "operavel": true,
+      "preco": 0,
+      "prefixo": "ISAE"
+    },
+    {
+      "alterado": false,
+      "grupo_antigo": "A",
+      "grupo_novo": "A",
+      "id": 5,
+      "nome": "ITSA4",
+      "operavel": true,
+      "preco": 0,
+      "prefixo": "ITSA"
+    },
+    {
+      "alterado": false,
+      "grupo_antigo": "A",
+      "grupo_novo": "A",
+      "id": 5,
+      "nome": "ITUB4",
+      "operavel": true,
+      "preco": 0,
+      "prefixo": "ITUB"
+    },
+    {
+      "alterado": false,
+      "grupo_antigo": "A",
+      "grupo_novo": "A",
+      "id": 76,
+      "nome": "JBSS32",
+      "operavel": true,
+      "preco": 0,
+      "prefixo": "JBSS"
+    },
+    {
+      "alterado": false,
+      "grupo_antigo": "A",
+      "grupo_novo": "A",
+      "id": 39,
+      "nome": "JHSF3",
+      "operavel": true,
+      "preco": 0,
+      "prefixo": "JHSF"
+    },
+    {
+      "alterado": false,
+      "grupo_antigo": "A",
+      "grupo_novo": "A",
+      "id": 28,
+      "nome": "KLBN11",
+      "operavel": true,
+      "preco": 0,
+      "prefixo": "KLBN"
+    },
+    {
+      "alterado": false,
+      "grupo_antigo": "A",
+      "grupo_novo": "A",
+      "id": 26,
+      "nome": "LREN3",
+      "operavel": true,
+      "preco": 0,
+      "prefixo": "LREN"
+    },
+    {
+      "alterado": false,
+      "grupo_antigo": "A",
+      "grupo_novo": "A",
+      "id": 32,
+      "nome": "MBRF3",
+      "operavel": true,
+      "preco": 0,
+      "prefixo": "MBRF"
+    },
+    {
+      "alterado": false,
+      "grupo_antigo": "A",
+      "grupo_novo": "A",
+      "id": 79,
+      "nome": "MOTV3",
+      "operavel": true,
+      "preco": 0,
+      "prefixo": "MOTV"
+    },
+    {
+      "alterado": false,
+      "grupo_antigo": "A",
+      "grupo_novo": "A",
+      "id": 62,
+      "nome": "MULT3",
+      "operavel": true,
+      "preco": 0,
+      "prefixo": "MULT"
+    },
+    {
+      "alterado": false,
+      "grupo_antigo": "A",
+      "grupo_novo": "A",
+      "id": 3,
+      "nome": "PETR4",
+      "operavel": true,
+      "preco": 0,
+      "prefixo": "PETR"
+    },
+    {
+      "alterado": false,
+      "grupo_antigo": "A",
+      "grupo_novo": "A",
+      "id": 17,
+      "nome": "PRIO3",
+      "operavel": true,
+      "preco": 0,
+      "prefixo": "PRIO"
+    },
+    {
+      "alterado": false,
+      "grupo_antigo": "A",
+      "grupo_novo": "A",
+      "id": 31,
+      "nome": "PSSA3",
+      "operavel": true,
+      "preco": 0,
+      "prefixo": "PSSA"
+    },
+    {
+      "alterado": false,
+      "grupo_antigo": "A",
+      "grupo_novo": "A",
+      "id": 54,
+      "nome": "RADL3",
+      "operavel": true,
+      "preco": 0,
+      "prefixo": "RADL"
+    },
+    {
+      "alterado": false,
+      "grupo_antigo": "A",
+      "grupo_novo": "A",
+      "id": 41,
+      "nome": "RAIL3",
+      "operavel": true,
+      "preco": 0,
+      "prefixo": "RAIL"
+    },
+    {
+      "alterado": false,
+      "grupo_antigo": "A",
+      "grupo_novo": "A",
+      "id": 55,
+      "nome": "RDOR3",
+      "operavel": true,
+      "preco": 0,
+      "prefixo": "RDOR"
+    },
+    {
+      "alterado": false,
+      "grupo_antigo": "A",
+      "grupo_novo": "A",
+      "id": 58,
+      "nome": "RENT3",
+      "operavel": true,
+      "preco": 0,
+      "prefixo": "RENT"
+    },
+    {
+      "alterado": false,
+      "grupo_antigo": "A",
+      "grupo_novo": "A",
+      "id": 18,
+      "nome": "SANB11",
+      "operavel": true,
+      "preco": 0,
+      "prefixo": "SANB"
+    },
+    {
+      "alterado": false,
+      "grupo_antigo": "A",
+      "grupo_novo": "A",
+      "id": 48,
+      "nome": "SBSP3",
+      "operavel": true,
+      "preco": 0,
+      "prefixo": "SBSP"
+    },
+    {
+      "alterado": false,
+      "grupo_antigo": "A",
+      "grupo_novo": "A",
+      "id": 2,
+      "nome": "SMAL11",
+      "operavel": true,
+      "preco": 0,
+      "prefixo": "SMAL"
+    },
+    {
+      "alterado": false,
+      "grupo_antigo": "A",
+      "grupo_novo": "A",
+      "id": 11,
+      "nome": "SUZB3",
+      "operavel": true,
+      "preco": 0,
+      "prefixo": "SUZB"
+    },
+    {
+      "alterado": false,
+      "grupo_antigo": "A",
+      "grupo_novo": "A",
+      "id": 50,
+      "nome": "TAEE11",
+      "operavel": true,
+      "preco": 0,
+      "prefixo": "TAEE"
+    },
+    {
+      "alterado": false,
+      "grupo_antigo": "A",
+      "grupo_novo": "A",
+      "id": 83,
+      "nome": "TIMS3",
+      "operavel": true,
+      "preco": 0,
+      "prefixo": "TIMS"
+    },
+    {
+      "alterado": false,
+      "grupo_antigo": "A",
+      "grupo_novo": "A",
+      "id": 81,
+      "nome": "TOTS3",
+      "operavel": true,
+      "preco": 0,
+      "prefixo": "TOTS"
+    },
+    {
+      "alterado": false,
+      "grupo_antigo": "A",
+      "grupo_novo": "A",
+      "id": 59,
+      "nome": "UGPA3",
+      "operavel": true,
+      "preco": 0,
+      "prefixo": "UGPA"
+    },
+    {
+      "alterado": false,
+      "grupo_antigo": "A",
+      "grupo_novo": "A",
+      "id": 4,
+      "nome": "VALE3",
+      "operavel": true,
+      "preco": 0,
+      "prefixo": "VALE"
+    },
+    {
+      "alterado": false,
+      "grupo_antigo": "A",
+      "grupo_novo": "A",
+      "id": 43,
+      "nome": "VBBR3",
+      "operavel": true,
+      "preco": 0,
+      "prefixo": "VBBR"
+    },
+    {
+      "alterado": false,
+      "grupo_antigo": "A",
+      "grupo_novo": "A",
+      "id": 53,
+      "nome": "VIVA3",
+      "operavel": true,
+      "preco": 0,
+      "prefixo": "VIVA"
+    },
+    {
+      "alterado": false,
+      "grupo_antigo": "A",
+      "grupo_novo": "A",
+      "id": 86,
+      "nome": "VIVT3",
+      "operavel": true,
+      "preco": 0,
+      "prefixo": "VIVT"
+    },
+    {
+      "alterado": false,
+      "grupo_antigo": "A",
+      "grupo_novo": "A",
+      "id": 12,
+      "nome": "WEGE3",
+      "operavel": true,
+      "preco": 0,
+      "prefixo": "WEGE"
+    },
+    {
+      "alterado": false,
+      "grupo_antigo": "B",
+      "grupo_novo": "B",
+      "id": 34,
+      "nome": "ASAI3",
+      "operavel": true,
+      "preco": 0,
+      "prefixo": "ASAI"
+    },
+    {
+      "alterado": false,
+      "grupo_antigo": "B",
+      "grupo_novo": "B",
+      "id": 71,
+      "nome": "BRKM5",
+      "operavel": true,
+      "preco": 0,
+      "prefixo": "BRKM"
+    },
+    {
+      "alterado": false,
+      "grupo_antigo": "B",
+      "grupo_novo": "B",
+      "id": 23,
+      "nome": "CEAB3",
+      "operavel": true,
+      "preco": 0,
+      "prefixo": "CEAB"
+    },
+    {
+      "alterado": false,
+      "grupo_antigo": "B",
+      "grupo_novo": "B",
+      "id": 25,
+      "nome": "CSNA3",
+      "operavel": true,
+      "preco": 0,
+      "prefixo": "CSNA"
+    },
+    {
+      "alterado": false,
+      "grupo_antigo": "B",
+      "grupo_novo": "B",
+      "id": 56,
+      "nome": "ECOR3",
+      "operavel": true,
+      "preco": 0,
+      "prefixo": "ECOR"
+    },
+    {
+      "alterado": false,
+      "grupo_antigo": "B",
+      "grupo_novo": "B",
+      "id": 61,
+      "nome": "NATU3",
+      "operavel": true,
+      "preco": 0,
+      "prefixo": "NATU"
+    },
+    {
+      "alterado": false,
+      "grupo_antigo": "B",
+      "grupo_novo": "B",
+      "id": 46,
+      "nome": "POMO4",
+      "operavel": true,
+      "preco": 0,
+      "prefixo": "POMO"
+    },
+    {
+      "alterado": false,
+      "grupo_antigo": "B",
+      "grupo_novo": "B",
+      "id": 38,
+      "nome": "USIM5",
+      "operavel": true,
+      "preco": 0,
+      "prefixo": "USIM"
+    },
+    {
+      "alterado": false,
+      "grupo_antigo": "B",
+      "grupo_novo": "B",
+      "id": 75,
+      "nome": "YDUQ3",
+      "operavel": true,
+      "preco": 0,
+      "prefixo": "YDUQ"
+    },
+    {
+      "alterado": false,
+      "grupo_antigo": "C",
+      "grupo_novo": "C",
+      "id": 24,
+      "nome": "BEEF3",
+      "operavel": true,
+      "preco": 0,
+      "prefixo": "BEEF"
+    },
+    {
+      "alterado": false,
+      "grupo_antigo": "C",
+      "grupo_novo": "C",
+      "id": 67,
+      "nome": "COGN3",
+      "operavel": true,
+      "preco": 0,
+      "prefixo": "COGN"
+    },
+    {
+      "alterado": false,
+      "grupo_antigo": "C",
+      "grupo_novo": "C",
+      "id": 35,
+      "nome": "CSAN3",
+      "operavel": true,
+      "preco": 0,
+      "prefixo": "CSAN"
+    },
+    {
+      "alterado": false,
+      "grupo_antigo": "C",
+      "grupo_novo": "C",
+      "id": 77,
+      "nome": "MGLU3",
+      "operavel": true,
+      "preco": 0,
+      "prefixo": "MGLU"
+    },
+    {
+      "alterado": false,
+      "grupo_antigo": "C",
+      "grupo_novo": "C",
+      "id": 44,
+      "nome": "MRVE3",
+      "operavel": true,
+      "preco": 0,
+      "prefixo": "MRVE"
+    },
+    {
+      "alterado": false,
+      "grupo_antigo": "D",
+      "grupo_novo": "D",
+      "id": 82,
+      "nome": "BHIA3",
+      "operavel": false,
+      "preco": 0,
+      "prefixo": "BHIA"
+    },
+    {
+      "alterado": false,
+      "grupo_antigo": "D",
+      "grupo_novo": "D",
+      "id": 19,
+      "nome": "BRAV3",
+      "operavel": false,
+      "preco": 0,
+      "prefixo": "BRAV"
+    },
+    {
+      "alterado": false,
+      "grupo_antigo": "D",
+      "grupo_novo": "D",
+      "id": 72,
+      "nome": "BRSR6",
+      "operavel": false,
+      "preco": 0,
+      "prefixo": "BRSR"
+    },
+    {
+      "alterado": false,
+      "grupo_antigo": "D",
+      "grupo_novo": "D",
+      "id": 16,
+      "nome": "CMIN3",
+      "operavel": false,
+      "preco": 0,
+      "prefixo": "CMIN"
+    },
+    {
+      "alterado": false,
+      "grupo_antigo": "D",
+      "grupo_novo": "D",
+      "id": 69,
+      "nome": "CVCB3",
+      "operavel": false,
+      "preco": 0,
+      "prefixo": "CVCB"
+    },
+    {
+      "alterado": false,
+      "grupo_antigo": "D",
+      "grupo_novo": "D",
+      "id": 64,
+      "nome": "HAPV3",
+      "operavel": false,
+      "preco": 0,
+      "prefixo": "HAPV"
+    },
+    {
+      "alterado": false,
+      "grupo_antigo": "D",
+      "grupo_novo": "D",
+      "id": 49,
+      "nome": "HASH11",
+      "operavel": false,
+      "preco": 0,
+      "prefixo": "HASH"
+    },
+    {
+      "alterado": false,
+      "grupo_antigo": "D",
+      "grupo_novo": "D",
+      "id": 40,
+      "nome": "IRBR3",
+      "operavel": false,
+      "preco": 0,
+      "prefixo": "IRBR"
+    },
+    {
+      "alterado": false,
+      "grupo_antigo": "D",
+      "grupo_novo": "D",
+      "id": 73,
+      "nome": "LWSA3",
+      "operavel": false,
+      "preco": 0,
+      "prefixo": "LWSA"
+    },
+    {
+      "alterado": false,
+      "grupo_antigo": "D",
+      "grupo_novo": "D",
+      "id": 47,
+      "nome": "MOVI3",
+      "operavel": false,
+      "preco": 0,
+      "prefixo": "MOVI"
+    },
+    {
+      "alterado": false,
+      "grupo_antigo": "D",
+      "grupo_novo": "D",
+      "id": 85,
+      "nome": "QUAL3",
+      "operavel": false,
+      "preco": 0,
+      "prefixo": "QUAL"
+    },
+    {
+      "alterado": false,
+      "grupo_antigo": "D",
+      "grupo_novo": "D",
+      "id": 65,
+      "nome": "SAPR11",
+      "operavel": false,
+      "preco": 0,
+      "prefixo": "SAPR"
+    },
+    {
+      "alterado": false,
+      "grupo_antigo": "D",
+      "grupo_novo": "D",
+      "id": 74,
+      "nome": "SIMH3",
+      "operavel": false,
+      "preco": 0,
+      "prefixo": "SIMH"
+    },
+    {
+      "alterado": false,
+      "grupo_antigo": "D",
+      "grupo_novo": "D",
+      "id": 80,
+      "nome": "SMTO3",
+      "operavel": false,
+      "preco": 0,
+      "prefixo": "SMTO"
+    },
+    {
+      "alterado": false,
+      "grupo_antigo": "D",
+      "grupo_novo": "D",
+      "id": 76,
+      "nome": "SPCX34",
+      "operavel": false,
+      "preco": 0,
+      "prefixo": "SPCX"
+    },
+    {
+      "alterado": false,
+      "grupo_antigo": "D",
+      "grupo_novo": "D",
+      "id": 78,
+      "nome": "XPBR31",
+      "operavel": false,
+      "preco": 0,
+      "prefixo": "XPBR"
+    }
+  ]
+}

@@ -22,18 +22,38 @@ function App() {
   }, [search, tipoFilter, assetFilter, vencFilter, sortConfig]);
 
   useEffect(() => {
-    // Tenta carregar o arquivo dummy primeiro (options_data.json)
+    // 1. Tenta carregar do localStorage se já houver dados importados previamente
+    const saved = localStorage.getItem('b3_options_data');
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          setData(parsed);
+          setLoading(false);
+          return;
+        }
+      } catch (e) {
+        console.warn('Erro ao ler localStorage', e);
+      }
+    }
+
+    // 2. Se não houver no localStorage, busca /options_data.json
     fetch('/options_data.json')
       .then((res) => {
         if (!res.ok) throw new Error('Network response was not ok');
         return res.json();
       })
       .then((json) => {
-        setData(json);
+        if (Array.isArray(json) && json.length > 0) {
+          setData(json);
+          try {
+            localStorage.setItem('b3_options_data', JSON.stringify(json));
+          } catch (e) {}
+        }
         setLoading(false);
       })
       .catch((err) => {
-        console.warn('options_data.json não encontrado, aguardando upload manual', err);
+        console.warn('options_data.json não encontrado ou vazio', err);
         setLoading(false);
       });
   }, []);
@@ -43,15 +63,37 @@ function App() {
     if (!file) return;
     const reader = new FileReader();
     reader.onload = (event) => {
+      const text = event.target.result;
       try {
-        const json = JSON.parse(event.target.result);
-        if (Array.isArray(json)) {
+        let json = null;
+        if (file.name.toLowerCase().endsWith('.html') || file.name.toLowerCase().endsWith('.htm')) {
+          // Extrai o array JSON embutido na tag <script> (ex: const allData = [...])
+          const match = text.match(/const\s+(?:allData|RAW_DATA|optionsData)\s*=\s*(\[[\s\S]*?\]);/) ||
+                        text.match(/(\[\s*\{\s*"ticker"[\s\S]*?\}\s*\])/);
+          if (match) {
+            json = JSON.parse(match[1]);
+          } else {
+            alert("Não foi possível localizar o array de opções dentro do arquivo HTML selecionado.");
+            return;
+          }
+        } else {
+          json = JSON.parse(text);
+        }
+
+        if (Array.isArray(json) && json.length > 0) {
           setData(json);
+          try {
+            localStorage.setItem('b3_options_data', JSON.stringify(json));
+          } catch (errStorage) {
+            console.warn('Limite do localStorage excedido', errStorage);
+          }
+          alert(`Sucesso! ${json.length.toLocaleString('pt-BR')} opções carregadas do arquivo ${file.name}.`);
         } else {
           alert("O arquivo não possui o formato esperado de array de opções.");
         }
       } catch (err) {
-        alert("Erro ao parsear o JSON.");
+        console.error(err);
+        alert("Erro ao ler ou parsear o arquivo: " + err.message);
       }
     };
     reader.readAsText(file);
@@ -176,8 +218,8 @@ function App() {
         </h1>
         <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
           <label className="btn glass">
-            <UploadCloud size={16} /> Carregar JSON
-            <input type="file" accept=".json" onChange={handleFileUpload} style={{ display: 'none' }} />
+            <UploadCloud size={16} /> Carregar JSON / HTML
+            <input type="file" accept=".json,.html,.htm" onChange={handleFileUpload} style={{ display: 'none' }} />
           </label>
         </div>
       </header>
