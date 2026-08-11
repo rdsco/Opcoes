@@ -9,6 +9,8 @@ function App() {
   const [tipoFilter, setTipoFilter] = useState('ALL');
   const [assetFilter, setAssetFilter] = useState('ALL');
   const [sortConfig, setSortConfig] = useState({ key: 'ticker', direction: 'asc' });
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [passwordInput, setPasswordInput] = useState('');
 
   useEffect(() => {
     // Tenta carregar o arquivo dummy primeiro (options_data.json)
@@ -104,6 +106,40 @@ function App() {
     if (sortConfig.key !== key) return null;
     return sortConfig.direction === 'asc' ? <ChevronUp size={14} /> : <ChevronDown size={14} />;
   };
+
+  const handleLogin = (e) => {
+    e.preventDefault();
+    if (passwordInput === 'rdsco2026') {
+      setIsAuthenticated(true);
+    } else {
+      alert('Senha incorreta!');
+      setPasswordInput('');
+    }
+  };
+
+  if (!isAuthenticated) {
+    return (
+      <div className="app-container" style={{ alignItems: 'center', justifyContent: 'center', minHeight: '100vh', display: 'flex' }}>
+        <div className="glass" style={{ padding: '2rem', borderRadius: '12px', textAlign: 'center', maxWidth: '400px', width: '100%' }}>
+          <Activity size={48} color="var(--accent-blue)" style={{ marginBottom: '1rem' }} />
+          <h2 style={{ marginBottom: '1.5rem' }} className="gradient-text">Acesso Restrito</h2>
+          <form onSubmit={handleLogin} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+            <input 
+              type="password" 
+              className="input-field" 
+              placeholder="Digite a senha..."
+              value={passwordInput}
+              onChange={(e) => setPasswordInput(e.target.value)}
+              autoFocus
+            />
+            <button type="submit" className="btn active" style={{ justifyContent: 'center', width: '100%' }}>
+              Acessar
+            </button>
+          </form>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="app-container">
