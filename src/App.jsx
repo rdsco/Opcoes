@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from 'react';
-import { Search, Activity, UploadCloud, ChevronUp, ChevronDown, Filter, FileJson } from 'lucide-react';
+import { Search, Activity, UploadCloud, ChevronUp, ChevronDown, Filter, FileJson, ChevronLeft, ChevronRight } from 'lucide-react';
 import './index.css';
 
 function App() {
@@ -8,9 +8,18 @@ function App() {
   const [search, setSearch] = useState('');
   const [tipoFilter, setTipoFilter] = useState('ALL');
   const [assetFilter, setAssetFilter] = useState('ALL');
+  const [vencFilter, setVencFilter] = useState('ALL');
   const [sortConfig, setSortConfig] = useState({ key: 'ticker', direction: 'asc' });
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [passwordInput, setPasswordInput] = useState('');
+  
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 50;
+
+  // Reseta a página para 1 sempre que os filtros mudarem
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [search, tipoFilter, assetFilter, vencFilter, sortConfig]);
 
   useEffect(() => {
     // Tenta carregar o arquivo dummy primeiro (options_data.json)
@@ -59,8 +68,9 @@ function App() {
       
       const matchesTipo = tipoFilter === 'ALL' || item.tipo === tipoFilter;
       const matchesAsset = assetFilter === 'ALL' || item.asset === assetFilter;
+      const matchesVenc = vencFilter === 'ALL' || item.vencimento === vencFilter;
 
-      return matchesSearch && matchesTipo && matchesAsset;
+      return matchesSearch && matchesTipo && matchesAsset && matchesVenc;
     });
 
     if (sortConfig.key) {
@@ -78,11 +88,19 @@ function App() {
     }
 
     return filtered;
-  }, [data, search, tipoFilter, assetFilter, sortConfig]);
+  }, [data, search, tipoFilter, assetFilter, vencFilter, sortConfig]);
 
   const uniqueAssets = useMemo(() => {
     const assets = new Set(data.map(d => d.asset).filter(Boolean));
     return [...assets].sort();
+  }, [data]);
+
+  const uniqueVencimentos = useMemo(() => {
+    const vencs = new Set(data.map(d => d.vencimento).filter(Boolean));
+    return [...vencs].sort((a, b) => {
+      const parse = str => str.split('/').reverse().join('');
+      return parse(a).localeCompare(parse(b));
+    });
   }, [data]);
 
   const metrics = useMemo(() => {
@@ -116,6 +134,13 @@ function App() {
       setPasswordInput('');
     }
   };
+
+  // Pagination Logic
+  const totalPages = Math.ceil(filteredData.length / itemsPerPage) || 1;
+  const paginatedData = useMemo(() => {
+    const start = (currentPage - 1) * itemsPerPage;
+    return filteredData.slice(start, start + itemsPerPage);
+  }, [filteredData, currentPage]);
 
   if (!isAuthenticated) {
     return (
@@ -178,7 +203,7 @@ function App() {
       </div>
 
       {/* Controls */}
-      <div className="glass" style={{ padding: '1.25rem', borderRadius: '12px', display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
+      <div className="glass" style={{ padding: '1.25rem', borderRadius: '12px', display: 'flex', gap: '1rem', flexWrap: 'wrap', marginBottom: '1.5rem' }}>
         <div style={{ flex: 1, minWidth: '280px', position: 'relative' }}>
           <Search size={18} style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-secondary)' }} />
           <input 
@@ -208,6 +233,18 @@ function App() {
               <option key={a} value={a}>{a}</option>
             ))}
           </select>
+
+          <select 
+            className="input-field" 
+            style={{ width: 'auto', padding: '0.55rem 1rem' }}
+            value={vencFilter}
+            onChange={(e) => setVencFilter(e.target.value)}
+          >
+            <option value="ALL">Todos os Vencimentos</option>
+            {uniqueVencimentos.map(v => (
+              <option key={v} value={v}>{v}</option>
+            ))}
+          </select>
         </div>
       </div>
 
@@ -225,8 +262,8 @@ function App() {
             </tr>
           </thead>
           <tbody>
-            {filteredData.length > 0 ? (
-              filteredData.map((item, idx) => (
+            {paginatedData.length > 0 ? (
+              paginatedData.map((item, idx) => (
                 <tr key={`${item.ticker}-${idx}`}>
                   <td style={{ fontFamily: 'ui-monospace, monospace', fontWeight: 600 }}>{item.ticker}</td>
                   <td>
@@ -243,13 +280,43 @@ function App() {
                 <td colSpan="4">
                   <div className="empty-state">
                     <FileJson size={48} color="var(--border-color)" />
-                    {loading ? "Carregando..." : "Nenhuma opção encontrada. Verifique os filtros ou faça upload de um JSON."}
+                    {loading ? "Carregando..." : "Nenhuma opção encontrada para os filtros aplicados."}
                   </div>
                 </td>
               </tr>
             )}
           </tbody>
         </table>
+        
+        {/* Pagination Controls */}
+        {filteredData.length > 0 && (
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '1rem', borderTop: '1px solid var(--border-color)', background: 'var(--bg-card)' }}>
+            <div style={{ color: 'var(--text-secondary)', fontSize: '0.85rem' }}>
+              Mostrando {paginatedData.length} de {filteredData.length} opções
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+              <button 
+                className="btn glass" 
+                style={{ padding: '0.4rem 0.8rem' }}
+                disabled={currentPage === 1}
+                onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+              >
+                <ChevronLeft size={16} /> Anterior
+              </button>
+              <span style={{ fontSize: '0.85rem', color: 'var(--text-primary)' }}>
+                Página {currentPage} de {totalPages}
+              </span>
+              <button 
+                className="btn glass" 
+                style={{ padding: '0.4rem 0.8rem' }}
+                disabled={currentPage === totalPages}
+                onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+              >
+                Próxima <ChevronRight size={16} />
+              </button>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
