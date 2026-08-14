@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from 'react';
-import { Search, Activity, UploadCloud, ChevronUp, ChevronDown, Filter, FileJson, ChevronLeft, ChevronRight, ExternalLink, Layers, Database } from 'lucide-react';
+import { Search, Activity, UploadCloud, ChevronUp, ChevronDown, Filter, FileJson, ChevronLeft, ChevronRight, ExternalLink, Layers } from 'lucide-react';
 import './index.css';
 
 function App() {
@@ -17,16 +17,14 @@ function App() {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 50;
 
-  // Reseta a página para 1 sempre que os filtros mudarem
   useEffect(() => {
     setCurrentPage(1);
   }, [search, tipoFilter, assetFilter, vencFilter, sortConfig]);
 
   useEffect(() => {
-    // Busca sempre do servidor /options_data.json atualizado primeiro
     fetch('/options_data.json')
       .then((res) => {
-        if (!res.ok) throw new Error('Falha ao carregar arquivo de opções.');
+        if (!res.ok) throw new Error('Falha ao carregar opções.');
         return res.json();
       })
       .then((json) => {
@@ -81,13 +79,13 @@ function App() {
           } catch (errStorage) {
             console.warn('Limite do localStorage excedido', errStorage);
           }
-          alert(`Sucesso! ${json.length.toLocaleString('pt-BR')} opções carregadas do arquivo ${file.name}.`);
+          alert(`Sucesso! ${json.length.toLocaleString('pt-BR')} opções carregadas de ${file.name}.`);
         } else {
           alert("O arquivo não possui o formato esperado de array de opções.");
         }
       } catch (err) {
         console.error(err);
-        alert("Erro ao ler ou parsear o arquivo: " + err.message);
+        alert("Erro ao ler arquivo: " + err.message);
       }
     };
     reader.readAsText(file);
@@ -186,7 +184,6 @@ function App() {
     }
   };
 
-  // Pagination Logic
   const totalPages = Math.ceil(filteredData.length / itemsPerPage) || 1;
   const paginatedData = useMemo(() => {
     const start = (currentPage - 1) * itemsPerPage;
@@ -196,10 +193,13 @@ function App() {
   if (!isAuthenticated) {
     return (
       <div className="app-container" style={{ alignItems: 'center', justifyContent: 'center', minHeight: '100vh', display: 'flex' }}>
-        <div className="glass" style={{ padding: '2rem', borderRadius: '12px', textAlign: 'center', maxWidth: '400px', width: '100%' }}>
-          <Activity size={48} color="var(--accent-blue)" style={{ marginBottom: '1rem' }} />
-          <h2 style={{ marginBottom: '1.5rem' }} className="gradient-text">Acesso Restrito</h2>
-          <form onSubmit={handleLogin} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+        <div style={{ background: '#FFFFFF', border: '1px solid #E2E8F0', padding: '2rem', borderRadius: '8px', textAlign: 'center', maxWidth: '400px', width: '100%', boxShadow: '0 4px 12px rgba(0,0,0,0.05)' }}>
+          <Activity size={40} color="#1859A9" style={{ marginBottom: '0.75rem' }} />
+          <div style={{ display: 'inline-block', background: '#1859A9', color: '#FFF', fontSize: '11px', fontWeight: 700, padding: '3px 8px', borderRadius: '4px', marginBottom: '0.5rem' }}>
+            INVESTING STYLE
+          </div>
+          <h2 style={{ fontSize: '1.25rem', fontWeight: 700, color: '#0F172A', marginBottom: '1.25rem' }}>Acesso Restrito</h2>
+          <form onSubmit={handleLogin} style={{ display: 'flex', flexDirection: 'column', gap: '0.85rem' }}>
             <input 
               type="password" 
               className="input-field" 
@@ -209,7 +209,7 @@ function App() {
               autoFocus
             />
             <button type="submit" className="btn active" style={{ justifyContent: 'center', width: '100%' }}>
-              Acessar
+              Acessar Painel
             </button>
           </form>
         </div>
@@ -219,25 +219,30 @@ function App() {
 
   return (
     <div className="app-container">
-      {/* Header */}
+      {/* Header Estilo Investing.com */}
       <header className="header">
-        <h1>
-          <Activity size={28} color="var(--accent-blue)" />
-          <span className="gradient-text">Opções Dashboard</span>
-        </h1>
-        <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
+        <div className="brand-section">
+          <span className="brand-tag">INVESTING STYLE</span>
+          <div>
+            <h1>
+              <Activity size={22} color="#1859A9" />
+              <span>Consulta de Opções B3</span>
+            </h1>
+          </div>
+        </div>
+
+        <div style={{ display: 'flex', gap: '0.6rem', alignItems: 'center' }}>
           <a 
             href="https://investimentos.btgpactual.com/opcoes/margens/" 
             target="_blank" 
             rel="noopener noreferrer" 
-            className="btn glass"
-            title="Origem oficial do PDF de Margens"
-            style={{ textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '0.5rem' }}
+            className="btn"
+            title="Origem oficial em PDF"
           >
-            <ExternalLink size={16} /> BTG Margens PDF
+            <ExternalLink size={14} /> BTG Margens PDF
           </a>
-          <label className="btn glass" style={{ cursor: 'pointer' }}>
-            <UploadCloud size={16} /> Carregar JSON / HTML
+          <label className="btn" style={{ cursor: 'pointer' }}>
+            <UploadCloud size={14} /> Carregar JSON / HTML
             <input type="file" accept=".json,.html,.htm" onChange={handleFileUpload} style={{ display: 'none' }} />
           </label>
         </div>
@@ -246,21 +251,20 @@ function App() {
       {/* Main Layout with Sidebar */}
       <div className="dashboard-layout">
         {/* Sidebar de Ativos */}
-        <aside className="assets-sidebar glass">
+        <aside className="assets-sidebar">
           <div className="sidebar-title-row">
-            <span style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-              <Layers size={18} color="var(--accent-blue)" />
+            <span style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+              <Layers size={16} color="#1859A9" />
               Ativos ({metrics.assets})
             </span>
           </div>
 
-          <div style={{ position: 'relative' }}>
-            <Search size={14} style={{ position: 'absolute', left: '0.75rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-secondary)' }} />
+          <div>
             <input 
               type="text"
-              className="input-field asset-search-input"
-              style={{ paddingLeft: '2.25rem' }}
-              placeholder="Buscar ativo..."
+              className="input-field"
+              style={{ width: '100%', fontSize: '0.8rem', padding: '0.4rem 0.6rem' }}
+              placeholder="Filtrar ativo..."
               value={assetSearch}
               onChange={(e) => setAssetSearch(e.target.value)}
             />
@@ -292,47 +296,46 @@ function App() {
         <main className="main-content">
           {/* Metrics Cards */}
           <div className="metrics-grid">
-            <div className="metric-card glass">
+            <div className="metric-card">
               <div className="metric-title">Total de Opções</div>
               <div className="metric-value">{metrics.total.toLocaleString('pt-BR')}</div>
             </div>
-            <div className="metric-card glass" style={{ borderColor: 'var(--accent-call-bg)' }}>
+            <div className="metric-card">
               <div className="metric-title">Opções Call</div>
-              <div className="metric-value" style={{ color: 'var(--accent-call)' }}>{metrics.calls.toLocaleString('pt-BR')}</div>
+              <div className="metric-value" style={{ color: 'var(--color-green)' }}>{metrics.calls.toLocaleString('pt-BR')}</div>
             </div>
-            <div className="metric-card glass" style={{ borderColor: 'var(--accent-put-bg)' }}>
+            <div className="metric-card">
               <div className="metric-title">Opções Put</div>
-              <div className="metric-value" style={{ color: 'var(--accent-put)' }}>{metrics.puts.toLocaleString('pt-BR')}</div>
+              <div className="metric-value" style={{ color: 'var(--color-red)' }}>{metrics.puts.toLocaleString('pt-BR')}</div>
             </div>
-            <div className="metric-card glass" style={{ borderColor: 'var(--accent-blue-bg)' }}>
+            <div className="metric-card">
               <div className="metric-title">Ativos Distintos</div>
-              <div className="metric-value" style={{ color: 'var(--accent-blue)' }}>{metrics.assets}</div>
+              <div className="metric-value" style={{ color: '#1859A9' }}>{metrics.assets}</div>
             </div>
           </div>
 
-          {/* Controls */}
-          <div className="glass" style={{ padding: '1.25rem', borderRadius: '12px', display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
-            <div style={{ flex: 1, minWidth: '240px', position: 'relative' }}>
-              <Search size={18} style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-secondary)' }} />
+          {/* Controls Filter Bar */}
+          <div className="filter-bar">
+            <div style={{ flex: 1, minWidth: '220px', position: 'relative' }}>
               <input 
                 type="text" 
                 className="input-field" 
-                style={{ paddingLeft: '2.75rem' }}
+                style={{ width: '100%' }}
                 placeholder="Buscar por Ticker (ex: ABEVA100, Put, 21/08)..."
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
               />
             </div>
             
-            <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', alignItems: 'center' }}>
-              <Filter size={18} color="var(--text-secondary)" />
+            <div style={{ display: 'flex', gap: '0.4rem', flexWrap: 'wrap', alignItems: 'center' }}>
+              <Filter size={16} color="var(--text-muted)" />
               <button className={`btn ${tipoFilter === 'ALL' ? 'active' : ''}`} onClick={() => setTipoFilter('ALL')}>Todos</button>
               <button className={`btn ${tipoFilter === 'Call' ? 'active' : ''}`} onClick={() => setTipoFilter('Call')}>Calls</button>
               <button className={`btn ${tipoFilter === 'Put' ? 'active' : ''}`} onClick={() => setTipoFilter('Put')}>Puts</button>
 
               <select 
                 className="input-field" 
-                style={{ width: 'auto', padding: '0.55rem 1rem' }}
+                style={{ width: 'auto', padding: '0.45rem 0.8rem' }}
                 value={vencFilter}
                 onChange={(e) => setVencFilter(e.target.value)}
               >
@@ -344,39 +347,39 @@ function App() {
             </div>
           </div>
 
-          {/* Table */}
-          <div className="table-container glass">
+          {/* Table Estilo Investing */}
+          <div className="table-container">
             <table>
               <thead>
                 <tr>
-                  <th onClick={() => handleSort('ticker')} style={{ display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
+                  <th onClick={() => handleSort('ticker')}>
                     Ticker {getSortIcon('ticker')}
                   </th>
                   <th onClick={() => handleSort('tipo')}>Tipo {getSortIcon('tipo')}</th>
-                  <th onClick={() => handleSort('raw_valor')}>Valor {getSortIcon('raw_valor')}</th>
-                  <th onClick={() => handleSort('vencimento_iso')}>Vencimento {getSortIcon('vencimento_iso')}</th>
+                  <th onClick={() => handleSort('raw_valor')} style={{ textAlign: 'right' }}>Valor {getSortIcon('raw_valor')}</th>
+                  <th onClick={() => handleSort('vencimento_iso')} style={{ textAlign: 'center' }}>Vencimento {getSortIcon('vencimento_iso')}</th>
                 </tr>
               </thead>
               <tbody>
                 {paginatedData.length > 0 ? (
                   paginatedData.map((item, idx) => (
                     <tr key={`${item.ticker}-${idx}`}>
-                      <td style={{ fontFamily: 'ui-monospace, monospace', fontWeight: 600 }}>{item.ticker}</td>
+                      <td className="col-ticker">{item.ticker}</td>
                       <td>
                         <span className={`badge-tipo ${item.tipo === 'Call' ? 'call' : 'put'}`}>
                           {item.tipo}
                         </span>
                       </td>
-                      <td style={{ fontFamily: 'ui-monospace, monospace' }}>{item.valor}</td>
-                      <td style={{ color: 'var(--text-secondary)', fontWeight: 500 }}>{item.vencimento}</td>
+                      <td className="col-price" style={{ textAlign: 'right' }}>{item.valor}</td>
+                      <td style={{ textAlign: 'center', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>{item.vencimento}</td>
                     </tr>
                   ))
                 ) : (
                   <tr>
                     <td colSpan="4">
                       <div className="empty-state">
-                        <FileJson size={48} color="var(--border-color)" />
-                        {loading ? "Carregando opções..." : "Nenhuma opção encontrada para os filtros aplicados."}
+                        <FileJson size={40} color="var(--border-dark)" />
+                        {loading ? "Carregando cotações..." : "Nenhuma opção encontrada para os filtros aplicados."}
                       </div>
                     </td>
                   </tr>
@@ -386,29 +389,29 @@ function App() {
             
             {/* Pagination Controls */}
             {filteredData.length > 0 && (
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '1rem', borderTop: '1px solid var(--border-color)', background: 'var(--bg-card)' }}>
-                <div style={{ color: 'var(--text-secondary)', fontSize: '0.85rem' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0.75rem 1rem', borderTop: '1px solid var(--border-color)', background: 'var(--bg-header)' }}>
+                <div style={{ color: 'var(--text-muted)', fontSize: '0.8rem', fontFamily: 'var(--font-mono)' }}>
                   Mostrando {paginatedData.length} de {filteredData.length.toLocaleString('pt-BR')} opções
                 </div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
                   <button 
-                    className="btn glass" 
-                    style={{ padding: '0.4rem 0.8rem' }}
+                    className="btn" 
+                    style={{ padding: '0.35rem 0.7rem' }}
                     disabled={currentPage === 1}
                     onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
                   >
-                    <ChevronLeft size={16} /> Anterior
+                    <ChevronLeft size={14} /> Anterior
                   </button>
-                  <span style={{ fontSize: '0.85rem', color: 'var(--text-primary)' }}>
+                  <span style={{ fontSize: '0.8rem', color: '#0F172A', fontFamily: 'var(--font-mono)' }}>
                     Página {currentPage} de {totalPages}
                   </span>
                   <button 
-                    className="btn glass" 
-                    style={{ padding: '0.4rem 0.8rem' }}
+                    className="btn" 
+                    style={{ padding: '0.35rem 0.7rem' }}
                     disabled={currentPage === totalPages}
                     onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
                   >
-                    Próxima <ChevronRight size={16} />
+                    Próxima <ChevronRight size={14} />
                   </button>
                 </div>
               </div>
