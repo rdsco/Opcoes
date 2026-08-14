@@ -5,6 +5,9 @@ import json
 import datetime
 import webbrowser
 import argparse
+import urllib.request
+
+DEFAULT_BTG_URL = "https://investimentos.btgpactual.com/opcoes/margens/"
 
 # Set UTF-8 encoding for stdout
 sys.stdout.reconfigure(encoding='utf-8')
@@ -823,20 +826,71 @@ def generate_html(options_data, ref_date_str, source_info, output_html_path):
 
     print(f"--> HTML gerado com sucesso em: {output_html_path}")
 
+
+def download_pdf_from_btg(url=DEFAULT_BTG_URL, dest_path="btg_margens.pdf"):
+    """
+    Faz o download do PDF de margens de opções diretamente do BTG Pactual.
+    """
+    print(f"Obtendo PDF atualizado do BTG: {url}...")
+    headers = {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,application/pdf,*/*;q=0.8'
+    }
+    req = urllib.request.Request(url, headers=headers)
+    try:
+        with urllib.request.urlopen(req, timeout=30) as response:
+            content = response.read()
+            if len(content) < 1000:
+                raise ValueError("O conteúdo baixado é muito curto para ser um PDF válido.")
+            with open(dest_path, "wb") as f:
+                f.write(content)
+        print(f"--> PDF baixado com sucesso ({len(content):,} bytes) e salvo em: {dest_path}")
+        return dest_path
+    except Exception as e:
+        print(f"[AVISO] Falha ao baixar PDF de {url}: {e}")
+        return None
+
 def main():
-    parser = argparse.ArgumentParser(description="Importador de Opções B3 (TXT e PDF)")
-    parser.add_argument("filename", nargs="?", default="btg_margens.pdf", help="Caminho do arquivo TXT ou PDF")
+    parser = argparse.ArgumentParser(description="Importador de Opções B3 (BTG Pactual PDF e TXT)")
+    parser.add_argument("source", nargs="?", default=None, help="Caminho do arquivo TXT/PDF local ou URL. Se não informado, baixa da URL do BTG.")
+    parser.add_argument("--url", type=str, default=DEFAULT_BTG_URL, help="URL de origem do PDF de margens do BTG")
+    parser.add_argument("--offline", action="store_true", help="Usar arquivo local existente sem tentar baixar da web")
     parser.add_argument("--max-pages", type=int, default=1, help="Número máximo de páginas a importar (para PDF). Padrão: 1")
     parser.add_argument("--output-html", type=str, default=None, help="Nome do arquivo HTML de saída")
+    parser.add_argument("--no-browser", action="store_true", help="Não abrir o navegador automaticamente após gerar o HTML")
     
     args = parser.parse_args()
 
     current_dir = os.path.dirname(os.path.abspath(__file__))
-    input_path = args.filename if os.path.isabs(args.filename) else os.path.join(current_dir, args.filename)
-    
-    if not os.path.exists(input_path):
-        print(f"[ERRO] Arquivo não encontrado: {input_path}")
-        sys.exit(1)
+    default_local_pdf = os.path.join(current_dir, "btg_margens.pdf")
+
+    source_input = args.source
+    input_path = None
+
+    if source_input and (source_input.startswith("http://") or source_input.startswith("https://")):
+        downloaded = download_pdf_from_btg(source_input, default_local_pdf)
+        if not downloaded:
+            print("[ERRO] Não foi possível baixar o PDF da URL informada.")
+            sys.exit(1)
+        input_path = default_local_pdf
+    elif source_input and os.path.exists(source_input if os.path.isabs(source_input) else os.path.join(current_dir, source_input)):
+        input_path = source_input if os.path.isabs(source_input) else os.path.join(current_dir, source_input)
+    elif args.offline:
+        input_path = default_local_pdf
+        if not os.path.exists(input_path):
+            print(f"[ERRO] Modo offline solicitado, mas o arquivo local não foi encontrado: {input_path}")
+            sys.exit(1)
+    else:
+        # Padrão online: tenta baixar da URL do BTG
+        downloaded = download_pdf_from_btg(args.url, default_local_pdf)
+        if downloaded:
+            input_path = default_local_pdf
+        elif os.path.exists(default_local_pdf):
+            print(f"[INFO] Utilizando arquivo local como fallback: {default_local_pdf}")
+            input_path = default_local_pdf
+        else:
+            print("[ERRO] Não foi possível obter o PDF online e nenhum arquivo local foi encontrado.")
+            sys.exit(1)
 
     filename_base = os.path.basename(input_path)
     output_html_name = args.output_html if args.output_html else f"opcoes_{os.path.splitext(filename_base)[0]}.html"
@@ -869,8 +923,9 @@ def main():
             print(f"--> JSON atualizado em: {public_json_path}")
             
         generate_html(options_data, ref_date_str, source_info, output_html_path)
-        print("\nAbrindo visualizador no navegador...")
-        webbrowser.open(f"file:///{output_html_path.replace(os.sep, '/')}")
+        if not args.no_browser:
+            print("\nAbrindo visualizador no navegador...")
+            webbrowser.open(f"file:///{output_html_path.replace(os.sep, '/')}")
     else:
         print("[ERRO] Falha ao processar dados do arquivo.")
 

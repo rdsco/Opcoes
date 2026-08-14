@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from 'react';
-import { Search, Activity, UploadCloud, ChevronUp, ChevronDown, Filter, FileJson, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Search, Activity, UploadCloud, ChevronUp, ChevronDown, Filter, FileJson, ChevronLeft, ChevronRight, ExternalLink } from 'lucide-react';
 import './index.css';
 
 function App() {
@@ -216,7 +216,17 @@ function App() {
           <Activity size={28} color="var(--accent-blue)" />
           <span className="gradient-text">Opções Dashboard</span>
         </h1>
-        <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+        <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
+          <a 
+            href="https://investimentos.btgpactual.com/opcoes/margens/" 
+            target="_blank" 
+            rel="noopener noreferrer" 
+            className="btn glass"
+            title="Origem oficial do PDF de Margens"
+            style={{ textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '0.5rem' }}
+          >
+            <ExternalLink size={16} /> BTG Margens PDF
+          </a>
           <label className="btn glass">
             <UploadCloud size={16} /> Carregar JSON / HTML
             <input type="file" accept=".json,.html,.htm" onChange={handleFileUpload} style={{ display: 'none' }} />
