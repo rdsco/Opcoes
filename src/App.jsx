@@ -1,11 +1,12 @@
 import { useState, useEffect, useMemo } from 'react';
-import { Search, Activity, UploadCloud, ChevronUp, ChevronDown, Filter, FileJson, ChevronLeft, ChevronRight, ExternalLink } from 'lucide-react';
+import { Search, Activity, UploadCloud, ChevronUp, ChevronDown, Filter, FileJson, ChevronLeft, ChevronRight, ExternalLink, Layers, Database } from 'lucide-react';
 import './index.css';
 
 function App() {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
+  const [assetSearch, setAssetSearch] = useState('');
   const [tipoFilter, setTipoFilter] = useState('ALL');
   const [assetFilter, setAssetFilter] = useState('ALL');
   const [vencFilter, setVencFilter] = useState('ALL');
@@ -22,25 +23,10 @@ function App() {
   }, [search, tipoFilter, assetFilter, vencFilter, sortConfig]);
 
   useEffect(() => {
-    // 1. Tenta carregar do localStorage se já houver dados importados previamente
-    const saved = localStorage.getItem('b3_options_data');
-    if (saved) {
-      try {
-        const parsed = JSON.parse(saved);
-        if (Array.isArray(parsed) && parsed.length > 0) {
-          setData(parsed);
-          setLoading(false);
-          return;
-        }
-      } catch (e) {
-        console.warn('Erro ao ler localStorage', e);
-      }
-    }
-
-    // 2. Se não houver no localStorage, busca /options_data.json
+    // Busca sempre do servidor /options_data.json atualizado primeiro
     fetch('/options_data.json')
       .then((res) => {
-        if (!res.ok) throw new Error('Network response was not ok');
+        if (!res.ok) throw new Error('Falha ao carregar arquivo de opções.');
         return res.json();
       })
       .then((json) => {
@@ -53,7 +39,16 @@ function App() {
         setLoading(false);
       })
       .catch((err) => {
-        console.warn('options_data.json não encontrado ou vazio', err);
+        console.warn('options_data.json não encontrado ou erro ao buscar. Tentando localStorage...', err);
+        const saved = localStorage.getItem('b3_options_data');
+        if (saved) {
+          try {
+            const parsed = JSON.parse(saved);
+            if (Array.isArray(parsed) && parsed.length > 0) {
+              setData(parsed);
+            }
+          } catch (e) {}
+        }
         setLoading(false);
       });
   }, []);
@@ -67,7 +62,6 @@ function App() {
       try {
         let json = null;
         if (file.name.toLowerCase().endsWith('.html') || file.name.toLowerCase().endsWith('.htm')) {
-          // Extrai o array JSON embutido na tag <script> (ex: const allData = [...])
           const match = text.match(/const\s+(?:allData|RAW_DATA|optionsData)\s*=\s*(\[[\s\S]*?\]);/) ||
                         text.match(/(\[\s*\{\s*"ticker"[\s\S]*?\}\s*\])/);
           if (match) {
@@ -98,6 +92,26 @@ function App() {
     };
     reader.readAsText(file);
   };
+
+  const assetCounts = useMemo(() => {
+    const counts = {};
+    data.forEach((item) => {
+      if (item.asset) {
+        counts[item.asset] = (counts[item.asset] || 0) + 1;
+      }
+    });
+    return counts;
+  }, [data]);
+
+  const sortedAssetList = useMemo(() => {
+    return Object.keys(assetCounts).sort();
+  }, [assetCounts]);
+
+  const filteredSidebarAssets = useMemo(() => {
+    if (!assetSearch.trim()) return sortedAssetList;
+    const q = assetSearch.toLowerCase();
+    return sortedAssetList.filter(a => a.toLowerCase().includes(q));
+  }, [sortedAssetList, assetSearch]);
 
   const filteredData = useMemo(() => {
     let filtered = data.filter((item) => {
@@ -132,11 +146,6 @@ function App() {
     return filtered;
   }, [data, search, tipoFilter, assetFilter, vencFilter, sortConfig]);
 
-  const uniqueAssets = useMemo(() => {
-    const assets = new Set(data.map(d => d.asset).filter(Boolean));
-    return [...assets].sort();
-  }, [data]);
-
   const uniqueVencimentos = useMemo(() => {
     const vencs = new Set(data.map(d => d.vencimento).filter(Boolean));
     return [...vencs].sort((a, b) => {
@@ -150,9 +159,9 @@ function App() {
       total: data.length,
       calls: data.filter(d => d.tipo === 'Call').length,
       puts: data.filter(d => d.tipo === 'Put').length,
-      assets: uniqueAssets.length
+      assets: sortedAssetList.length
     };
-  }, [data, uniqueAssets]);
+  }, [data, sortedAssetList]);
 
   const handleSort = (key) => {
     let direction = 'asc';
@@ -227,148 +236,185 @@ function App() {
           >
             <ExternalLink size={16} /> BTG Margens PDF
           </a>
-          <label className="btn glass">
+          <label className="btn glass" style={{ cursor: 'pointer' }}>
             <UploadCloud size={16} /> Carregar JSON / HTML
             <input type="file" accept=".json,.html,.htm" onChange={handleFileUpload} style={{ display: 'none' }} />
           </label>
         </div>
       </header>
 
-      {/* Metrics Cards */}
-      <div className="metrics-grid">
-        <div className="metric-card glass">
-          <div className="metric-title">Total de Opções</div>
-          <div className="metric-value">{metrics.total}</div>
-        </div>
-        <div className="metric-card glass" style={{ borderColor: 'var(--accent-call-bg)' }}>
-          <div className="metric-title">Opções Call</div>
-          <div className="metric-value" style={{ color: 'var(--accent-call)' }}>{metrics.calls}</div>
-        </div>
-        <div className="metric-card glass" style={{ borderColor: 'var(--accent-put-bg)' }}>
-          <div className="metric-title">Opções Put</div>
-          <div className="metric-value" style={{ color: 'var(--accent-put)' }}>{metrics.puts}</div>
-        </div>
-        <div className="metric-card glass" style={{ borderColor: 'var(--accent-blue-bg)' }}>
-          <div className="metric-title">Ativos Distintos</div>
-          <div className="metric-value" style={{ color: 'var(--accent-blue)' }}>{metrics.assets}</div>
-        </div>
-      </div>
+      {/* Main Layout with Sidebar */}
+      <div className="dashboard-layout">
+        {/* Sidebar de Ativos */}
+        <aside className="assets-sidebar glass">
+          <div className="sidebar-title-row">
+            <span style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+              <Layers size={18} color="var(--accent-blue)" />
+              Ativos ({metrics.assets})
+            </span>
+          </div>
 
-      {/* Controls */}
-      <div className="glass" style={{ padding: '1.25rem', borderRadius: '12px', display: 'flex', gap: '1rem', flexWrap: 'wrap', marginBottom: '1.5rem' }}>
-        <div style={{ flex: 1, minWidth: '280px', position: 'relative' }}>
-          <Search size={18} style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-secondary)' }} />
-          <input 
-            type="text" 
-            className="input-field" 
-            style={{ paddingLeft: '2.75rem' }}
-            placeholder="Buscar por Ticker (ex: ABEVA100, Put, 21/08)..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-          />
-        </div>
-        
-        <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', alignItems: 'center' }}>
-          <Filter size={18} color="var(--text-secondary)" />
-          <button className={`btn ${tipoFilter === 'ALL' ? 'active' : ''}`} onClick={() => setTipoFilter('ALL')}>Todos</button>
-          <button className={`btn ${tipoFilter === 'Call' ? 'active' : ''}`} onClick={() => setTipoFilter('Call')}>Calls</button>
-          <button className={`btn ${tipoFilter === 'Put' ? 'active' : ''}`} onClick={() => setTipoFilter('Put')}>Puts</button>
+          <div style={{ position: 'relative' }}>
+            <Search size={14} style={{ position: 'absolute', left: '0.75rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-secondary)' }} />
+            <input 
+              type="text"
+              className="input-field asset-search-input"
+              style={{ paddingLeft: '2.25rem' }}
+              placeholder="Buscar ativo..."
+              value={assetSearch}
+              onChange={(e) => setAssetSearch(e.target.value)}
+            />
+          </div>
 
-          <select 
-            className="input-field" 
-            style={{ width: 'auto', padding: '0.55rem 1rem' }}
-            value={assetFilter}
-            onChange={(e) => setAssetFilter(e.target.value)}
-          >
-            <option value="ALL">Todos os Ativos</option>
-            {uniqueAssets.map(a => (
-              <option key={a} value={a}>{a}</option>
+          <div className="assets-scroll-list">
+            <button 
+              className={`asset-item-btn ${assetFilter === 'ALL' ? 'active' : ''}`}
+              onClick={() => setAssetFilter('ALL')}
+            >
+              <span>Todos os Ativos</span>
+              <span className="asset-badge-count">{data.length.toLocaleString('pt-BR')}</span>
+            </button>
+            
+            {filteredSidebarAssets.map((asset) => (
+              <button 
+                key={asset}
+                className={`asset-item-btn ${assetFilter === asset ? 'active' : ''}`}
+                onClick={() => setAssetFilter(assetFilter === asset ? 'ALL' : asset)}
+              >
+                <span>{asset}</span>
+                <span className="asset-badge-count">{assetCounts[asset]?.toLocaleString('pt-BR')}</span>
+              </button>
             ))}
-          </select>
+          </div>
+        </aside>
 
-          <select 
-            className="input-field" 
-            style={{ width: 'auto', padding: '0.55rem 1rem' }}
-            value={vencFilter}
-            onChange={(e) => setVencFilter(e.target.value)}
-          >
-            <option value="ALL">Todos os Vencimentos</option>
-            {uniqueVencimentos.map(v => (
-              <option key={v} value={v}>{v}</option>
-            ))}
-          </select>
-        </div>
-      </div>
-
-      {/* Table */}
-      <div className="table-container glass">
-        <table>
-          <thead>
-            <tr>
-              <th onClick={() => handleSort('ticker')} style={{ display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
-                Ticker {getSortIcon('ticker')}
-              </th>
-              <th onClick={() => handleSort('tipo')}>Tipo {getSortIcon('tipo')}</th>
-              <th onClick={() => handleSort('raw_valor')}>Valor {getSortIcon('raw_valor')}</th>
-              <th onClick={() => handleSort('vencimento_iso')}>Vencimento {getSortIcon('vencimento_iso')}</th>
-            </tr>
-          </thead>
-          <tbody>
-            {paginatedData.length > 0 ? (
-              paginatedData.map((item, idx) => (
-                <tr key={`${item.ticker}-${idx}`}>
-                  <td style={{ fontFamily: 'ui-monospace, monospace', fontWeight: 600 }}>{item.ticker}</td>
-                  <td>
-                    <span className={`badge-tipo ${item.tipo === 'Call' ? 'call' : 'put'}`}>
-                      {item.tipo}
-                    </span>
-                  </td>
-                  <td style={{ fontFamily: 'ui-monospace, monospace' }}>{item.valor}</td>
-                  <td style={{ color: 'var(--text-secondary)', fontWeight: 500 }}>{item.vencimento}</td>
-                </tr>
-              ))
-            ) : (
-              <tr>
-                <td colSpan="4">
-                  <div className="empty-state">
-                    <FileJson size={48} color="var(--border-color)" />
-                    {loading ? "Carregando..." : "Nenhuma opção encontrada para os filtros aplicados."}
-                  </div>
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
-        
-        {/* Pagination Controls */}
-        {filteredData.length > 0 && (
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '1rem', borderTop: '1px solid var(--border-color)', background: 'var(--bg-card)' }}>
-            <div style={{ color: 'var(--text-secondary)', fontSize: '0.85rem' }}>
-              Mostrando {paginatedData.length} de {filteredData.length} opções
+        {/* Main Content Area */}
+        <main className="main-content">
+          {/* Metrics Cards */}
+          <div className="metrics-grid">
+            <div className="metric-card glass">
+              <div className="metric-title">Total de Opções</div>
+              <div className="metric-value">{metrics.total.toLocaleString('pt-BR')}</div>
             </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-              <button 
-                className="btn glass" 
-                style={{ padding: '0.4rem 0.8rem' }}
-                disabled={currentPage === 1}
-                onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
-              >
-                <ChevronLeft size={16} /> Anterior
-              </button>
-              <span style={{ fontSize: '0.85rem', color: 'var(--text-primary)' }}>
-                Página {currentPage} de {totalPages}
-              </span>
-              <button 
-                className="btn glass" 
-                style={{ padding: '0.4rem 0.8rem' }}
-                disabled={currentPage === totalPages}
-                onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
-              >
-                Próxima <ChevronRight size={16} />
-              </button>
+            <div className="metric-card glass" style={{ borderColor: 'var(--accent-call-bg)' }}>
+              <div className="metric-title">Opções Call</div>
+              <div className="metric-value" style={{ color: 'var(--accent-call)' }}>{metrics.calls.toLocaleString('pt-BR')}</div>
+            </div>
+            <div className="metric-card glass" style={{ borderColor: 'var(--accent-put-bg)' }}>
+              <div className="metric-title">Opções Put</div>
+              <div className="metric-value" style={{ color: 'var(--accent-put)' }}>{metrics.puts.toLocaleString('pt-BR')}</div>
+            </div>
+            <div className="metric-card glass" style={{ borderColor: 'var(--accent-blue-bg)' }}>
+              <div className="metric-title">Ativos Distintos</div>
+              <div className="metric-value" style={{ color: 'var(--accent-blue)' }}>{metrics.assets}</div>
             </div>
           </div>
-        )}
+
+          {/* Controls */}
+          <div className="glass" style={{ padding: '1.25rem', borderRadius: '12px', display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
+            <div style={{ flex: 1, minWidth: '240px', position: 'relative' }}>
+              <Search size={18} style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-secondary)' }} />
+              <input 
+                type="text" 
+                className="input-field" 
+                style={{ paddingLeft: '2.75rem' }}
+                placeholder="Buscar por Ticker (ex: ABEVA100, Put, 21/08)..."
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+              />
+            </div>
+            
+            <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', alignItems: 'center' }}>
+              <Filter size={18} color="var(--text-secondary)" />
+              <button className={`btn ${tipoFilter === 'ALL' ? 'active' : ''}`} onClick={() => setTipoFilter('ALL')}>Todos</button>
+              <button className={`btn ${tipoFilter === 'Call' ? 'active' : ''}`} onClick={() => setTipoFilter('Call')}>Calls</button>
+              <button className={`btn ${tipoFilter === 'Put' ? 'active' : ''}`} onClick={() => setTipoFilter('Put')}>Puts</button>
+
+              <select 
+                className="input-field" 
+                style={{ width: 'auto', padding: '0.55rem 1rem' }}
+                value={vencFilter}
+                onChange={(e) => setVencFilter(e.target.value)}
+              >
+                <option value="ALL">Todos os Vencimentos</option>
+                {uniqueVencimentos.map(v => (
+                  <option key={v} value={v}>{v}</option>
+                ))}
+              </select>
+            </div>
+          </div>
+
+          {/* Table */}
+          <div className="table-container glass">
+            <table>
+              <thead>
+                <tr>
+                  <th onClick={() => handleSort('ticker')} style={{ display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
+                    Ticker {getSortIcon('ticker')}
+                  </th>
+                  <th onClick={() => handleSort('tipo')}>Tipo {getSortIcon('tipo')}</th>
+                  <th onClick={() => handleSort('raw_valor')}>Valor {getSortIcon('raw_valor')}</th>
+                  <th onClick={() => handleSort('vencimento_iso')}>Vencimento {getSortIcon('vencimento_iso')}</th>
+                </tr>
+              </thead>
+              <tbody>
+                {paginatedData.length > 0 ? (
+                  paginatedData.map((item, idx) => (
+                    <tr key={`${item.ticker}-${idx}`}>
+                      <td style={{ fontFamily: 'ui-monospace, monospace', fontWeight: 600 }}>{item.ticker}</td>
+                      <td>
+                        <span className={`badge-tipo ${item.tipo === 'Call' ? 'call' : 'put'}`}>
+                          {item.tipo}
+                        </span>
+                      </td>
+                      <td style={{ fontFamily: 'ui-monospace, monospace' }}>{item.valor}</td>
+                      <td style={{ color: 'var(--text-secondary)', fontWeight: 500 }}>{item.vencimento}</td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan="4">
+                      <div className="empty-state">
+                        <FileJson size={48} color="var(--border-color)" />
+                        {loading ? "Carregando opções..." : "Nenhuma opção encontrada para os filtros aplicados."}
+                      </div>
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+            
+            {/* Pagination Controls */}
+            {filteredData.length > 0 && (
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '1rem', borderTop: '1px solid var(--border-color)', background: 'var(--bg-card)' }}>
+                <div style={{ color: 'var(--text-secondary)', fontSize: '0.85rem' }}>
+                  Mostrando {paginatedData.length} de {filteredData.length.toLocaleString('pt-BR')} opções
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                  <button 
+                    className="btn glass" 
+                    style={{ padding: '0.4rem 0.8rem' }}
+                    disabled={currentPage === 1}
+                    onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                  >
+                    <ChevronLeft size={16} /> Anterior
+                  </button>
+                  <span style={{ fontSize: '0.85rem', color: 'var(--text-primary)' }}>
+                    Página {currentPage} de {totalPages}
+                  </span>
+                  <button 
+                    className="btn glass" 
+                    style={{ padding: '0.4rem 0.8rem' }}
+                    disabled={currentPage === totalPages}
+                    onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+                  >
+                    Próxima <ChevronRight size={16} />
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
+        </main>
       </div>
     </div>
   );

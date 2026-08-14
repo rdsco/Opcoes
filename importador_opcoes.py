@@ -19,7 +19,7 @@ PUT_LETTERS = "MNOPQRSTUVWX"
 def extract_text_from_file(filepath, max_pages=None):
     """
     Extracts plain text content from either a .txt or .pdf file.
-    If max_pages is set (e.g., 1), only extracts up to that many pages from PDF.
+    Reads all pages by default unless max_pages is explicitly set.
     """
     ext = os.path.splitext(filepath)[1].lower()
     
@@ -28,7 +28,19 @@ def extract_text_from_file(filepath, max_pages=None):
             return f.read(), 1
             
     elif ext == '.pdf':
+        # Try pypdf first for high-performance multi-page text extraction
         try:
+            import pypdf
+            reader = pypdf.PdfReader(filepath)
+            total_pages = len(reader.pages)
+            pages_to_process = min(max_pages, total_pages) if max_pages else total_pages
+            full_text = []
+            for i in range(pages_to_process):
+                p_text = reader.pages[i].extract_text()
+                if p_text:
+                    full_text.append(p_text)
+            return "\n".join(full_text), pages_to_process
+        except Exception:
             import pdfplumber
             full_text = []
             pages_read = 0
@@ -42,18 +54,6 @@ def extract_text_from_file(filepath, max_pages=None):
                         full_text.append(p_text)
                     pages_read += 1
             return "\n".join(full_text), pages_read
-        except ImportError:
-            # Fallback to pypdf if pdfplumber is missing
-            import pypdf
-            reader = pypdf.PdfReader(filepath)
-            total_pages = len(reader.pages)
-            pages_to_process = min(max_pages, total_pages) if max_pages else total_pages
-            full_text = []
-            for i in range(pages_to_process):
-                p_text = reader.pages[i].extract_text()
-                if p_text:
-                    full_text.append(p_text)
-            return "\n".join(full_text), pages_to_process
     else:
         raise ValueError(f"Formato de arquivo não suportado: {ext}")
 
@@ -855,7 +855,7 @@ def main():
     parser.add_argument("source", nargs="?", default=None, help="Caminho do arquivo TXT/PDF local ou URL. Se não informado, baixa da URL do BTG.")
     parser.add_argument("--url", type=str, default=DEFAULT_BTG_URL, help="URL de origem do PDF de margens do BTG")
     parser.add_argument("--offline", action="store_true", help="Usar arquivo local existente sem tentar baixar da web")
-    parser.add_argument("--max-pages", type=int, default=1, help="Número máximo de páginas a importar (para PDF). Padrão: 1")
+    parser.add_argument("--max-pages", type=int, default=None, help="Número máximo de páginas a importar (para PDF). Padrão: todas as páginas")
     parser.add_argument("--output-html", type=str, default=None, help="Nome do arquivo HTML de saída")
     parser.add_argument("--no-browser", action="store_true", help="Não abrir o navegador automaticamente após gerar o HTML")
     
